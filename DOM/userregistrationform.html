@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>JS For Beginners</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>JS For Beginners</h1>
+  </header>
+
+  <section class="container">
+    <form id="my-form">
+      <h1>Add User</h1>
+      <div class="msg"></div>
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name">
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="text" id="email">
+      </div>
+      <input class="btn" type="submit" value="Submit">
+    </form>
+
+    <ul id="users"></ul>
+
+    <!-- <ul class="items">
+      <li class="item">Item 1</li>
+      <li class="item">Item 2</li>
+      <li class="item">Item 3</li>
+    </ul> -->
+  </section>
+
+  <script>
+    // Function to handle form submission
+    function handleSubmit(event) {
+      event.preventDefault(); // Prevent the form from submitting and refreshing the page
+
+      // Get user input values
+      var name = document.getElementById('name').value;
+      var email = document.getElementById('email').value;
+
+      // Create a user object
+      var user = {
+        name: name,
+        email: email
+      };
+
+      // Get existing users from local storage or create an empty array
+      var existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Add the new user to the array
+      existingUsers.push(user);
+
+      // Store the updated user array in local storage
+      localStorage.setItem('users', JSON.stringify(existingUsers));
+
+      // Clear the form fields
+      document.getElementById('name').value = '';
+      document.getElementById('email').value = '';
+
+      // Call a function to update the list of users displayed on the page
+      updateUsersList();
+    }
+
+    // Function to update the list of users displayed on the page
+    function updateUsersList() {
+      var usersList = document.getElementById('users');
+      var existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Clear the existing list
+      usersList.innerHTML = '';
+
+      // Loop through the users and create list items to display them
+      for (var i = 0; i < existingUsers.length; i++) {
+        var user = existingUsers[i];
+        var listItem = document.createElement('li');
+        listItem.textContent = 'Name: ' + user.name + ', Email: ' + user.email;
+        usersList.appendChild(listItem);
+      }
+    }
+
+    // Attach the form submission handler to the form
+    var form = document.getElementById('my-form');
+    form.addEventListener('submit', handleSubmit);
+
+    // Call the function to update the list of users initially
+    updateUsersList();
+  </script>
+</body>
+</html>
