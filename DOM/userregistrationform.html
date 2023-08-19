@@ -28,69 +28,58 @@
     </form>
 
     <ul id="users"></ul>
-
-    <!-- <ul class="items">
-      <li class="item">Item 1</li>
-      <li class="item">Item 2</li>
-      <li class="item">Item 3</li>
-    </ul> -->
   </section>
+<script>
+  function handleSubmit(event) {
+    event.preventDefault();
 
-  <script>
-    // Function to handle form submission
-    function handleSubmit(event) {
-      event.preventDefault(); // Prevent the form from submitting and refreshing the page
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
 
-      // Get user input values
-      var name = document.getElementById('name').value;
-      var email = document.getElementById('email').value;
-
-      // Create a user object
-      var user = {
-        name: name,
-        email: email
-      };
-
-      // Get existing users from local storage or create an empty array
-      var existingUsers = JSON.parse(localStorage.getItem('users')) || [];
-
-      // Add the new user to the array
-      existingUsers.push(user);
-
-      // Store the updated user array in local storage
-      localStorage.setItem('users', JSON.stringify(existingUsers));
-
-      // Clear the form fields
-      document.getElementById('name').value = '';
-      document.getElementById('email').value = '';
-
-      // Call a function to update the list of users displayed on the page
-      updateUsersList();
+    if (!name || !email) {
+      alert('Please fill in both name and email.');
+      return;
     }
 
-    // Function to update the list of users displayed on the page
-    function updateUsersList() {
-      var usersList = document.getElementById('users');
-      var existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+    var user = {
+      name: name,
+      email: email
+    };
 
-      // Clear the existing list
-      usersList.innerHTML = '';
+    var users = JSON.parse(localStorage.getItem('users')) || [];
+    users.push(user);
 
-      // Loop through the users and create list items to display them
-      for (var i = 0; i < existingUsers.length; i++) {
-        var user = existingUsers[i];
-        var listItem = document.createElement('li');
-        listItem.textContent = 'Name: ' + user.name + ', Email: ' + user.email;
-        usersList.appendChild(listItem);
-      }
-    }
+    localStorage.setItem('users', JSON.stringify(users));
 
-    // Attach the form submission handler to the form
-    var form = document.getElementById('my-form');
-    form.addEventListener('submit', handleSubmit);
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
 
-    // Call the function to update the list of users initially
-    updateUsersList();
-  </script>
+  }
+
+
+  var form = document.getElementById('my-form');
+  form.addEventListener('submit', handleSubmit);
+
+  
+</script>
+<script>
+   function displayUsers()
+ {
+    var users = JSON.parse(localStorage.getItem('users')) || [];
+    var usersList = document.getElementById('users');
+    usersList.innerHTML = '';
+
+    users.forEach(function(user) {
+      var listItem = document.createElement('li');
+      listItem.textContent = 'Name: ' + user.name + ', Email: ' + user.email;
+      usersList.appendChild(listItem);
+    });
+  }
+
+  displayUsers();
+
+
+</script>
+
 </body>
 </html>
