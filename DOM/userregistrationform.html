@@ -70,11 +70,26 @@
       var usersList = document.getElementById('users');
       usersList.innerHTML = '';
 
-      users.forEach(function(user) {
+      users.forEach(function(user, index) {
         var listItem = document.createElement('li');
         listItem.textContent = 'Name: ' + user.name + ', Email: ' + user.email + ', Mobile: ' + user.mobile;
+
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', function() {
+          deleteUser(index);
+        });
+
+        listItem.appendChild(deleteButton);
         usersList.appendChild(listItem);
       });
+    }
+
+    function deleteUser(index) {
+      var users = JSON.parse(localStorage.getItem('users')) || [];
+      users.splice(index, 1);
+      localStorage.setItem('users', JSON.stringify(users));
+      displayUsers(); // Refresh the displayed list after deletion
     }
 
     var form = document.getElementById('my-form');
