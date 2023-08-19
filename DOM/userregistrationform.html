@@ -35,6 +35,8 @@
   </section>
   
   <script>
+    var editingIndex = -1; // Initialize with an invalid index
+
     function handleSubmit(event) {
       event.preventDefault();
 
@@ -47,22 +49,38 @@
         return;
       }
 
-      var user = {
-        name: name,
-        email: email,
-        mobile: mobile
-      };
+      if (editingIndex === -1) {
+        // Adding a new user
+        var user = {
+          name: name,
+          email: email,
+          mobile: mobile
+        };
 
-      var users = JSON.parse(localStorage.getItem('users')) || [];
-      users.push(user);
+        var users = JSON.parse(localStorage.getItem('users')) || [];
+        users.push(user);
 
-      localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('users', JSON.stringify(users));
+      } else {
+        // Editing an existing user
+        var users = JSON.parse(localStorage.getItem('users')) || [];
+        users[editingIndex] = {
+          name: name,
+          email: email,
+          mobile: mobile
+        };
+
+        localStorage.setItem('users', JSON.stringify(users));
+
+        editingIndex = -1; // Reset editingIndex
+        document.querySelector('.btn').value = 'Submit'; // Reset button text
+      }
 
       document.getElementById('name').value = '';
       document.getElementById('email').value = '';
       document.getElementById('mobile').value = '';
 
-      displayUsers(); // Display the users after adding the new user
+      displayUsers(); // Display the users after adding/editing the user
     }
 
     function displayUsers() {
@@ -74,10 +92,24 @@
         var listItem = document.createElement('li');
         listItem.textContent = 'Name: ' + user.name + ', Email: ' + user.email + ', Mobile: ' + user.mobile;
 
+        // Create an edit button for each user entry
+        var editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+
+        // Add a click event listener to the edit button
+        editButton.addEventListener('click', function() {
+          editUser(index); // Call the editUser function with the index of the user to edit
+        });
+
+        listItem.appendChild(editButton);
+
+        // Create a delete button for each user entry
         var deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
+
+        // Add a click event listener to the delete button
         deleteButton.addEventListener('click', function() {
-          deleteUser(index);
+          deleteUser(index); // Call the deleteUser function with the index of the user to delete
         });
 
         listItem.appendChild(deleteButton);
@@ -85,10 +117,26 @@
       });
     }
 
+    function editUser(index) {
+      var users = JSON.parse(localStorage.getItem('users')) || [];
+      var user = users[index];
+
+      // Populate input fields with user data for editing
+      document.getElementById('name').value = user.name;
+      document.getElementById('email').value = user.email;
+      document.getElementById('mobile').value = user.mobile;
+
+      // Change the submit button text to indicate editing
+      document.querySelector('.btn').value = 'Update';
+
+      // Set the editingIndex for update operation
+      editingIndex = index;
+    }
+
     function deleteUser(index) {
       var users = JSON.parse(localStorage.getItem('users')) || [];
-      users.splice(index, 1);
-      localStorage.setItem('users', JSON.stringify(users));
+      users.splice(index, 1); // Remove the user at the specified index
+      localStorage.setItem('users', JSON.stringify(users)); // Update local storage
       displayUsers(); // Refresh the displayed list after deletion
     }
 
